@@ -163,56 +163,69 @@ void GDEP073E01::init_fast() {
 }
 
 void GDEP073E01::clear() {
-    writeCommand(DTM);
+    startWrite();
     for (unsigned int i = 0; i < height; i++) {
         for (unsigned int j = 0; j < width / 2; j++) {
             writeData(GDEPD::White);
         }
     }
-    writeCommand(DRF);  // Refresh
-    delay(1);
-    checkStatus();
+    endWrite();
 }
 
-void GDEP073E01::display(const unsigned char* image, ImageDisplayMode mode) {
-    cv::Mat processedImage = processImage(image, mode);
+void GDEP073E01::display(const unsigned char* encodedImage, int length) {
+    // Start the data transmission command
+    unsigned char count = 0;
+    unsigned char color = 0;
+    unsigned char oldCount = 0;
+    unsigned char oldColor = 0;
+    int total = 0;
 
-    writeCommand(0x10);
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width / 2; j++) {
-            unsigned char temp1 = processedImage.at<unsigned char>(i, j * 2);
-            unsigned char temp2 = processedImage.at<unsigned char>(i, j * 2 + 1);
-            unsigned char data_H = colorToData(temp1) << 4;
-            unsigned char data_L = colorToData(temp2);
-            unsigned char data = data_H | data_L;
-            writeData(data);
+    startWrite();
+
+    for (int i = 0; i < length; i++) {
+        oldColor = color;
+        oldCount = count;
+
+        count = (encodedImage[i] >> 3) & 0x1F;
+        color = encodedImage[i] & 0x07;
+        total += count;
+
+        // If oldCount is odd, combine the last pixel of the previous color with the first of the current color
+        if (oldCount % 2 != 0) {
+            writeData(oldColor << 4 | color);
+            count--;
+        }
+
+        // Write remaining pairs of the current color
+        while (count > 1) {
+            writeData(color << 4 | color);
+            count -= 2;
         }
     }
 
-    writeCommand(0x12);  // DISPLAY REFRESH
-    writeData(0x00);
-    delay(1);  // The delay here is necessary, 200uS at least
-    checkStatus();  // waiting for the electronic paper IC to release the idle signal
+    // Refresh the display to show the new image
+    endWrite();
 }
 
-void GDEP073E01::sleep() {
+
+
+inline void GDEP073E01::startWrite() {
+    writeCommand(DTM);  // Start data transmission command
+}
+
+inline void GDEP073E01::endWrite() {
+    writeCommand(DRF);  // DISPLAY REFRESH
+    writeData(PSR);
+    delay(1);  // The delay here is necessary, 200uS at least
+    checkStatus();  // Wait for the electronic paper IC to release the idle signal
+}
+
+inline void GDEP073E01::sleep() {
     writeCommand(POF);  // Power off
-    writeData(0x00);
+    writeData(PSR);
     checkStatus();
 }
 
-void GDEP073E01::checkStatus() {
+inline void GDEP073E01::checkStatus() {
     while (!digitalRead(busyPin));
-}
-
-unsigned char GDEP073E01::colorToData(unsigned char color) {
-    switch (color) {
-        case GDEPD::Black: return 0x00;
-        case GDEPD::White: return 0x01;
-        case GDEPD::Yellow: return 0x02;
-        case GDEPD::Red: return 0x03;
-        case GDEPD::Blue: return 0x05;
-        case GDEPD::Green: return 0x06;
-        default: return 0x00;  // Default to black
-    }
 }

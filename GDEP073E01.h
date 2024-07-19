@@ -8,13 +8,14 @@ public:
     GDEP073E01();
     void init() override;
     void clear() override;
-    void display(const unsigned char* image, ImageDisplayMode mode) override;
-    void sleep() override;
+    void display(const unsigned char* encodedImage, int length) override;
+    inline void sleep() override;
     void init_fast() override;
+    inline void startWrite();
+    inline void endWrite();
 
 private:
-    void checkStatus();
-    unsigned char colorToData(unsigned char color);
+    inline void checkStatus();
 
     // Command definitions
     static const unsigned char PSR = 0x00;
