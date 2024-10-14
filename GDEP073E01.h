@@ -13,6 +13,8 @@ public:
     void init_fast() override;
     inline void startWrite();
     inline void endWrite();
+    void displayBlue();
+    void displayYellow();
 
 private:
     inline void checkStatus();

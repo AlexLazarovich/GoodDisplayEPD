@@ -6,9 +6,9 @@ import matplotlib.pyplot as plt
 
 # ESP32 server URL
 
-esp32_url_set_size = 'http://192.168.0.81/setSize'  # URL for setting the size
-esp32_url_set_chunk = 'http://192.168.0.81/setChunk'  # URL for setting the chunk size
-esp32_url_upload = 'http://192.168.0.81/upload'  # URL for uploading the image data
+esp32_url_set_size = 'http://192.168.0.109/setSize'  # URL for setting the size
+esp32_url_set_chunk = 'http://192.168.0.109/setChunk'  # URL for setting the chunk size
+esp32_url_upload = 'http://192.168.0.109/upload'  # URL for uploading the image data
 
 chunk_size = 1024  # Chunk size for sending the image data
 

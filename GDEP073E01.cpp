@@ -172,6 +172,26 @@ void GDEP073E01::clear() {
     endWrite();
 }
 
+void GDEP073E01::displayBlue() {
+    startWrite();
+    for (unsigned int i = 0; i < height; i++) {
+        for (unsigned int j = 0; j < width / 2; j++) {
+            writeData(GDEPD::Blue);
+        }
+    }
+    endWrite();
+}
+
+void GDEP073E01::displayYellow() {
+    startWrite();
+    for (unsigned int i = 0; i < height; i++) {
+        for (unsigned int j = 0; j < width / 2; j++) {
+            writeData(GDEPD::Yellow);
+        }
+    }
+    endWrite();
+}
+
 void GDEP073E01::display(const unsigned char* encodedImage, int length) {
     // Start the data transmission command
     unsigned char count = 0;

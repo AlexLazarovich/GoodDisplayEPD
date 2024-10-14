@@ -4,7 +4,7 @@
 
 #define EPD_WIDTH   800
 #define EPD_HEIGHT  480
-
+#define EPD_ARRAY  EPD_WIDTH*EPD_HEIGHT/8  
 
 
 void SPI_Write(unsigned char value);
@@ -67,6 +67,21 @@ void EPD_Display_blue(void);
 void EPD_Display_Green(void);
 void EPD_Display_red(void);
 void EPD_init_fast(void);
+//adding
+void EPD_SetRAMValue_BaseMap(const unsigned char* datasBW,const unsigned char* datasRW);
+void EPD_Update(void);
+void EPD_Init_Part(void);
+void EPD_Dis_Part_Time(unsigned int x_start,unsigned int y_start,
+	                      const unsigned char * datas_A,const unsigned char * datas_B,
+												const unsigned char * datas_C,const unsigned char * datas_D,const unsigned char * datas_E,
+                        unsigned char num,unsigned int PART_COLUMN,unsigned int PART_LINE);					
+void EPD_Dis_Part_RAM(unsigned int x_start,unsigned int y_start,
+	                      const unsigned char * datas_A,const unsigned char * datas_B,
+												const unsigned char * datas_C,const unsigned char * datas_D,const unsigned char * datas_E,
+                        unsigned char num,unsigned int PART_COLUMN,unsigned int PART_LINE);
+void EPD_DeepSleep(void);
+void EPD_Dis_Part(unsigned int x_start,unsigned int y_start,const unsigned char * datas,unsigned int PART_COLUMN,unsigned int PART_LINE);
+void EPD_Dis_Part_temp(unsigned int x_start,unsigned int y_start,unsigned int PART_COLUMN,unsigned int PART_LINE);
 #endif
 /***********************************************************
             end file
