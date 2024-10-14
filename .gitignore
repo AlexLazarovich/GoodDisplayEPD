@@ -6,3 +6,6 @@ image_data.h
 resize.py
 resized_image.jpg
 resized_image.png
+Client.py
+Etc/logo_icvl.png
+logo_icvl.png
